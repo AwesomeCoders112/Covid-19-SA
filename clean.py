@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from textblob import TextBlob
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -92,3 +93,21 @@ plt.show()
 sns.countplot(x='label', data=df)
 plt.title('Distribution of Sentiment Labels')
 plt.show()
+
+sentiments = df[['label','tweet_text']]
+def detect_sentiment(tweet_text):
+    return TextBlob(tweet_text).sentiment.polarity
+#We are doing our sentiment analysis.
+sentiments["sentiment"]=sentiments["tweet_text"].apply(detect_sentiment)
+print(sentiments.head())
+def sentiment2(sent):
+    if (sent< -0.02):
+        return 1
+    elif sent>0.02:
+        return 3
+    else:
+        return 2
+#We divide the texts into three groups positive, negative and nötr.
+sentiments["sent"]=sentiments["sentiment"].apply(sentiment2)
+print(sentiments.head())
+
