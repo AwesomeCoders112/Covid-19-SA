@@ -9,10 +9,12 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from textblob import TextBlob
+import string
+import re
 import warnings
 warnings.filterwarnings('ignore')
 
-# Download necessary NLTK data
+
 nltk.download('words')
 nltk.download('stopwords')
 
@@ -20,9 +22,6 @@ tweets_data = pd.read_csv("covid-19_tweets.csv", encoding="utf-8")
 
 print(tweets_data.head())
 
-# Define a function to clean tweets
-import string
-import re
 
 def clean_tweet(tweet):
     # Remove @ mentions, URLs, and extra spaces
@@ -42,10 +41,10 @@ def clean_tweet(tweet):
 
     return tweet
 
-# Apply the cleaning function to the 'tweet_text' column
+
 tweets_data['tweet_text'] = tweets_data['tweet_text'].apply(clean_tweet)
 
-# Save the cleaned data
+
 tweets_data.to_csv('covid-19_tweets.csv',mode='w',index=False)
 
 df = pd.read_csv("covid-19_tweets.csv", encoding="iso-8859-1")
@@ -97,9 +96,10 @@ plt.show()
 sentiments = df[['label','tweet_text']]
 def detect_sentiment(tweet_text):
     return TextBlob(tweet_text).sentiment.polarity
-#We are doing our sentiment analysis.
+
 sentiments["sentiment"]=sentiments["tweet_text"].apply(detect_sentiment)
 print(sentiments.head())
+
 def sentiment2(sent):
     if (sent< -0.02):
         return 1
@@ -107,7 +107,7 @@ def sentiment2(sent):
         return 3
     else:
         return 2
-#We divide the texts into three groups positive, negative and nötr.
+
 sentiments["sent"]=sentiments["sentiment"].apply(sentiment2)
 print(sentiments.head())
 
