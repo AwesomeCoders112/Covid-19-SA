@@ -41,11 +41,7 @@ def clean_tweet(tweet):
 
     return tweet
 
-
 tweets_data['tweet_text'] = tweets_data['tweet_text'].apply(clean_tweet)
-
-
-tweets_data.to_csv('covid-19_tweets.csv',mode='w',index=False)
 
 df = pd.read_csv("covid-19_tweets.csv", encoding="iso-8859-1")
 
@@ -61,7 +57,7 @@ df_negative=df[df['label']==1]
 df1=df[df['label']!=2]
 
 # Drop rows with neutral sentiment as we want to predict for 1 (negative) and 3 (positive)
-#df = df[df['label'].isin([1, 3])]
+df = df[df['label'].isin([1, 3])]
 
 vect = CountVectorizer(lowercase=True, stop_words="english")
 x = df.tweet_text
