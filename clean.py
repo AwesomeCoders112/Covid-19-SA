@@ -13,13 +13,12 @@ import string
 import re
 import warnings
 warnings.filterwarnings('ignore')
-
-
 nltk.download('words')
 nltk.download('stopwords')
+print("\n")
 
 tweets_data = pd.read_csv("covid-19_tweets.csv", encoding="utf-8")
-
+print("The Columns in the dataset are\n")
 print(tweets_data.head())
 
 
@@ -36,13 +35,14 @@ def clean_tweet(tweet):
     tweet = tweet.lower()
     # 3. Remove numbers
     tweet = re.sub(r'\d+', '', tweet)
-    # 4. Remove hashtags (optional, depending on your analysis)
+    # 4. Remove hashtags
     tweet = re.sub(r'#', '', tweet)
 
     return tweet
 
 tweets_data['tweet_text'] = tweets_data['tweet_text'].apply(clean_tweet)
 
+#reading the cleaned CSV File
 df = pd.read_csv("covid-19_tweets.csv", encoding="iso-8859-1")
 
 print("\n")
@@ -51,50 +51,15 @@ print(df.info())
 print("\n")
 print(df.describe())
 
-df_neutral=df[df['label']==2]
-df_positive=df[df['label']==3]
-df_negative=df[df['label']==1]
-df1=df[df['label']!=2]
-
-# Drop rows with neutral sentiment as we want to predict for 1 (negative) and 3 (positive)
-df = df[df['label'].isin([1, 3])]
-
-vect = CountVectorizer(lowercase=True, stop_words="english")
-x = df.tweet_text
-y = df.label
-x = vect.fit_transform(x)
-
-X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=60)
-knn = KNeighborsClassifier(n_neighbors=10)
-knn.fit(X_train, y_train)
-
-y_pred = knn.predict(X_test)
-print(classification_report(y_test, y_pred))
-print(confusion_matrix(y_test, y_pred))
-
-results = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
-print("Actual vs Predicted\n")
-print(results)
-
-print("Accuracy:", accuracy_score(y_test, y_pred))
-
-# Confusion Matrix
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d')
-plt.title('Confusion Matrix')
-plt.ylabel('Actual')
-plt.xlabel('Predicted')
-plt.show()
-
-sns.countplot(x='label', data=df)
-plt.title('Distribution of Sentiment Labels')
-plt.show()
-
+print("\n")
+#Sample application of sentiment using TextBlob
 sentiments = df[['label','tweet_text']]
 def detect_sentiment(tweet_text):
     return TextBlob(tweet_text).sentiment.polarity
 
 sentiments["sentiment"]=sentiments["tweet_text"].apply(detect_sentiment)
 print(sentiments.head())
+print("\n")
 
 def sentiment2(sent):
     if (sent< -0.02):
@@ -107,3 +72,51 @@ def sentiment2(sent):
 sentiments["sent"]=sentiments["sentiment"].apply(sentiment2)
 print(sentiments.head())
 
+df_neutral=df[df['label']==2]
+df_positive=df[df['label']==3]
+df_negative=df[df['label']==1]
+df1=df[df['label']!=2]
+
+# Drop rows with neutral sentiment as we want to predict for 1 (negative) and 3 (positive)
+df = df[df['label'].isin([1, 3])]
+
+#Converting the  data into a format that can be used by ML algorithm
+vect = CountVectorizer(lowercase=True, stop_words="english")
+x = df.tweet_text
+y = df.label
+x = vect.fit_transform(x)
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=60)
+knn = KNeighborsClassifier(n_neighbors=10)
+knn.fit(X_train, y_train)
+
+y_pred = knn.predict(X_test)
+print("Classification and Confusion Matrix\n")
+print(classification_report(y_test, y_pred))
+print(confusion_matrix(y_test, y_pred))
+print("\n")
+
+results = pd.DataFrame({'Actual': y_test, 'Predicted': y_pred})
+results.to_excel('results.xlsx', index=False)
+
+print("Actual vs Predicted\n")
+print(results)
+
+print("Accuracy:", accuracy_score(y_test, y_pred))
+
+# Confusion Matrix
+sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d')
+plt.title('Confusion Matrix')
+plt.ylabel('Actual')
+plt.xlabel('Predicted')
+plt.show()
+
+#CountPlot for Positive and negative
+sns.countplot(x='label', data=df)
+plt.title('Distribution of Sentiment Labels')
+plt.show()
+
+
+
+#ROC CURVE
+#Cross Validation (10 folds corss validation)
