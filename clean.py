@@ -8,10 +8,12 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import cross_val_score
 from textblob import TextBlob
 import string
 import re
 import warnings
+
 warnings.filterwarnings('ignore')
 nltk.download('words')
 nltk.download('stopwords')
@@ -102,6 +104,9 @@ results.to_excel('results.xlsx', index=False)
 print("Actual vs Predicted\n")
 print(results)
 
+cv_score = cross_val_score(knn,x,y,cv=10)
+print("Mean of cross validation score", cv_score.mean())
+
 print("Accuracy:", accuracy_score(y_test, y_pred))
 
 # Confusion Matrix
@@ -116,7 +121,10 @@ sns.countplot(x='label', data=df)
 plt.title('Distribution of Sentiment Labels')
 plt.show()
 
+train_accuracy = knn.score(X_train, y_train)
+test_accuracy = knn.score(X_test, y_test)
+
+print("Train accuracy\n",train_accuracy)
+print("test accuracy\n",test_accuracy)
 
 
-#ROC CURVE
-#Cross Validation (10 folds corss validation)

@@ -15,6 +15,9 @@ nltk.download('stopwords')
 # Load the dataset
 tweets_data = pd.read_csv("covid-19_tweets.csv", encoding="utf-8")
 
+# Drop rows with label 2 (neutral)
+tweets_data = tweets_data[tweets_data['label'] != 2]
+
 # Define a function to clean tweets
 def clean_tweet(tweet):
     tweet = re.sub(r'@[A-Za-z0-9_]+', '', tweet)
@@ -54,5 +57,5 @@ sns.countplot(x='Predicted', data=results)
 plt.title('Distribution of Sentiment Labels')
 plt.xlabel('Sentiment')
 plt.ylabel('Count')
-plt.xticks([0, 1, 2], ['Negative', 'Neutral', 'Positive'])
+plt.xticks([0, 1], ['Negative', 'Positive'])  # Update xticks to show only 'Negative' and 'Positive'
 plt.show()

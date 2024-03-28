@@ -15,7 +15,7 @@ nltk.download('stopwords')
 
 # Load your dataset
 # Assuming 'your_dataset.csv' contains 'label' and 'tweet_text' columns
-df = pd.read_csv('C:\\Users\\USER\\Desktop\\school stuff\\ml\\cleaned_tweets.csv')
+df = pd.read_csv('covid-19_tweets.csv')
 
 # Map numerical labels to sentiment labels
 sentiment_mapping = {1: 'negative', 2: 'neutral', 3: 'positive'}
