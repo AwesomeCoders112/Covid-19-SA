@@ -8,6 +8,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.model_selection import cross_val_score
 
 # Download necessary NLTK data
 nltk.download('stopwords')
@@ -44,6 +45,9 @@ nb.fit(X_train, y_train)
 # Predict the sentiment labels for the test set
 y_pred = nb.predict(X_test)
 
+cv_score = cross_val_score(nb,x,y,cv=10)
+print("Mean score of cross validation are ",cv_score.mean())
+
 # Print the classification report and accuracy score
 print("Accuracy:", accuracy_score(y_test, y_pred))
 print(classification_report(y_test, y_pred))
@@ -59,3 +63,11 @@ plt.xlabel('Sentiment')
 plt.ylabel('Count')
 plt.xticks([0, 1], ['Negative', 'Positive'])  # Update xticks to show only 'Negative' and 'Positive'
 plt.show()
+
+train_accuracy = nb.score(X_train,y_train)
+test_accuracy = nb.score(X_test,y_test)
+
+print("Train Accuracy")
+print(train_accuracy)
+print("Test Accuracy")
+print(test_accuracy)
