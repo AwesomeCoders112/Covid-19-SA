@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import nltk
 nltk.download('stopwords')
+import warnings
 
 # Load your dataset
 # Assuming 'your_dataset.csv' contains 'label' and 'tweet_text' columns
@@ -76,7 +77,7 @@ predictions = svm_model.predict(X_test_features)
 # Evaluate the model
 accuracy = accuracy_score(y_test, predictions)
 report = classification_report(y_test, predictions)
-print("Accuracy\n",accuracy_score)
+
 print(f"Test accuracy: {accuracy:.2f}")
 print("Classification Report:\n", report)
 
@@ -88,3 +89,4 @@ plt.xlabel('Sentiment')
 plt.ylabel('Count')
 plt.legend(title='Aspect')
 plt.show()
+print("Accuracy\n",accuracy_score)
