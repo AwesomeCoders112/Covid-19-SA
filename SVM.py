@@ -76,6 +76,7 @@ predictions = svm_model.predict(X_test_features)
 # Evaluate the model
 accuracy = accuracy_score(y_test, predictions)
 report = classification_report(y_test, predictions)
+print("Accuracy\n",accuracy_score)
 print(f"Test accuracy: {accuracy:.2f}")
 print("Classification Report:\n", report)
 

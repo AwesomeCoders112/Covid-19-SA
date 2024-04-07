@@ -127,4 +127,9 @@ test_accuracy = knn.score(X_test, y_test)
 print("Train accuracy\n",train_accuracy)
 print("test accuracy\n",test_accuracy)
 
-
+unseen_data = pd.read_csv("unseen.csv", encoding="utf-8")
+unseen_data['tweet_text'] = unseen_data['tweet_text'].apply(clean_tweet)
+X_unseen = vect.transform(unseen_data['tweet_text'])
+y_unseen_pred = knn.predict(X_unseen)
+unseen_accuracy = accuracy_score(unseen_data['label'], y_unseen_pred)
+print("Unseen data accuracy:", unseen_accuracy)
